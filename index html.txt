@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos</title>
+</head>
+<body>
+    <header>
+        <h1>Produtos</h1>
+        <nav>
+            <ul>
+                <li><a href="index.jsp">Página Inicial</a></li>
+                <li><a href="produtos.jsp">Produtos</a></li>
+                <li><a href="carrinho.jsp">Carrinho</a></li>
+                <li><a href="contato.jsp">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="produtos">
+        <h2>Produtos Disponíveis</h2>
+        <div id="produtos">
+            <c:forEach var="produto" items="${produtos}">
+                <div class="produto">
+                    <img src="${produto.imagem}" alt="${produto.nome}">
+                    <h3>${produto.nome}</h3>
+                    <p>${produto.descricao}</p>
+                    <p>R$ ${produto.preco}</p>
+                    <button>Adicionar ao Carrinho</button>
+                </div>
+            </c:forEach>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Loja de Café</p>
+        <p><a href="https://wa.me/55seunumerocomddd" target="_blank">Fale conosco no WhatsApp</a></p>
+    </footer>
+</body>
+</html>

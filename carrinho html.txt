@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho de Compras</title>
+</head>
+<body>
+    <header>
+        <h1>Carrinho de Compras</h1>
+        <nav>
+            <ul>
+                <li><a href="index.jsp">Página Inicial</a></li>
+                <li><a href="produtos.jsp">Produtos</a></li>
+                <li><a href="carrinho.jsp">Carrinho</a></li>
+                <li><a href="contato.jsp">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="carrinho">
+        <h2>Itens no Carrinho</h2>
+        <div id="itens-carrinho">
+            <!-- Aqui você usaria uma tag JSP para iterar sobre os itens no carrinho -->
+            <c:forEach var="item" items="${carrinho}">
+                <div class="item">
+                    <h3>${item.produto.nome}</h3>
+                    <p>Quantidade: ${item.quantidade}</p>
+                    <p>Preço: R$ ${item.produto.preco}</p>
+                    <button>Remover do Carrinho</button>
+                </div>
+            </c:forEach>
+        </div>
+        <p>Total: R$ ${total}</p>
+        <a href="checkout.jsp">Finalizar Compra</a>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Loja de Café</p>
+        <p><a href="https://wa.me/55seunumerocomddd" target="_blank">Fale conosco no WhatsApp</a></p>
+    </footer>
+</body>
+</html>

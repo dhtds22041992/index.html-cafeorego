@@ -1,0 +1,211 @@
+Estrutura de pastas do projeto
+
+/meu_site_de_cafe
+    /src
+        /com/cafe
+            /controllers
+                - ProdutoServlet.java
+                - CarrinhoServlet.java
+                - ContatoServlet.java
+            /models
+                - Produto.java
+                - Carrinho.java
+                - Pedido.java
+            /dao
+                - ProdutoDAO.java
+                - PedidoDAO.java
+    /web
+        /WEB-INF
+            - web.xml
+        /pages
+            - index.jsp
+            - produtos.jsp
+            - carrinho.jsp
+            - contato.jsp
+            - checkout.jsp
+    /lib
+        - mysql-connector-java-x.x.x.jar
+
+PRODUTOS
+
+package com.cafe.controllers;
+
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import com.cafe.dao.ProdutoDAO;
+import com.cafe.models.Produto;
+import java.util.List;
+
+public class ProdutoServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ProdutoDAO produtoDAO = new ProdutoDAO();
+        List<Produto> produtos = produtoDAO.getProdutos();
+        request.setAttribute("produtos", produtos);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/produtos.jsp");
+        dispatcher.forward(request, response);
+    }
+}
+
+Exemplo de DAO (Data Access Object) para Produtos
+package com.cafe.dao;
+
+import com.cafe.models.Produto;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ProdutoDAO {
+    private Connection connection;
+
+    public ProdutoDAO() {
+        try {
+            // Estabelece a conexão com o banco de dados
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/meu_site_cafe", "root", "senha");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Produto> getProdutos() {
+        List<Produto> produtos = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM produtos";
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                Produto produto = new Produto(rs.getInt("id"), rs.getString("nome"), rs.getString("descricao"), rs.getDouble("preco"));
+                produtos.add(produto);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return produtos;
+    }
+}
+
+Modelo Produto (Produto.java)
+
+package com.cafe.models;
+
+public class Produto {
+    private int id;
+    private String nome;
+    private String descricao;
+    private double preco;
+
+    public Produto(int id, String nome, String descricao, double preco) {
+        this.id = id;
+        this.nome = nome;
+        this.descricao = descricao;
+        this.preco = preco;
+    }
+
+    // Getters e setters
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
+    public double getPreco() { return preco; }
+    public void setPreco(double preco) { this.preco = preco; }
+}
+INDEX: 
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja de Café</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Loja de Café</h1>
+        <nav>
+            <ul>
+                <li><a href="index.jsp">Página Inicial</a></li>
+                <li><a href="produtos.jsp">Produtos</a></li>
+                <li><a href="carrinho.jsp">Carrinho</a></li>
+                <li><a href="contato.jsp">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="banner">
+        <img src="img/banner-cafe.jpg" alt="Café Fresquinho">
+        <h2>O Melhor Café, Direto para Sua Casa!</h2>
+        <a href="produtos.jsp">Veja Nossos Produtos</a>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Loja de Café</p>
+        <p><a href="https://wa.me/55seunumerocomddd" target="_blank">Fale conosco no WhatsApp</a></p>
+    </footer>
+</body>
+</html>
+
+
+PRODUTOS
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos</title>
+</head>
+<body>
+    <h2>Produtos</h2>
+    <div id="produtos">
+        <c:forEach var="produto" items="${produtos}">
+            <div class="produto">
+                <img src="${produto.imagem}" alt="${produto.nome}">
+                <h3>${produto.nome}</h3>
+                <p>${produto.descricao}</p>
+                <p>R$ ${produto.preco}</p>
+                <button>Adicionar ao Carrinho</button>
+            </div>
+        </c:forEach>
+    </div>
+</body>
+</html>
+
+
+WEB XML
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+    <servlet>
+        <servlet-name>ProdutoServlet</servlet-name>
+        <servlet-class>com.cafe.controllers.ProdutoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProdutoServlet</servlet-name>
+        <url-pattern>/produtos</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CarrinhoServlet</servlet-name>
+        <servlet-class>com.cafe.controllers.CarrinhoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CarrinhoServlet</servlet-name>
+        <url-pattern>/carrinho</url-pattern>
+    </servlet-mapping>
+
+    <!-- Configuração de outros servlets aqui -->
+</web-app>
+
+
+BANCO DE DADOS 
+
+CREATE TABLE produtos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100),
+    descricao TEXT,
+    preco DECIMAL(10, 2),
+    imagem VARCHAR(255)
+);
